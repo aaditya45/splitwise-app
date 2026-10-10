@@ -1,13 +1,14 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
-import { ProtectedScreen } from '@/components/protected-screen';
-import { AppText, Avatar, CurrencySymbol, IconButton, LoadingView, Money, Notice, ScreenFrame, uiStyles } from '@/components/ui/primitives';
-import { Palette, Radius, Spacing } from '@/constants/theme';
-import { api } from '@/lib/api';
+import { ProtectedScreen } from '@/features/auth/components/protected-screen';
+import { AppText, Avatar, CurrencySymbol, IconButton, LoadingView, Money, Notice, ScreenFrame, uiStyles } from '@/components/ui';
+import { expenseDetailsScreenStyles as styles } from '@/theme/styles/screens';
+import { Palette } from '@/theme';
+import { getExpense } from '@/features/expenses/api';
 import { useApp } from '@/providers/app-provider';
-import type { Expense } from '@/types/api';
+import type { Expense } from '@/features/expenses/types';
 
 export default function ExpenseDetailsScreen() {
   return <ProtectedScreen><ExpenseDetailsContent /></ProtectedScreen>;
@@ -23,7 +24,7 @@ function ExpenseDetailsContent() {
   useEffect(() => {
     if (!session || !expenseId) return;
     let active = true;
-    api.getExpense(session.token, Number(expenseId)).then((result) => {
+    getExpense(session.token, Number(expenseId)).then((result) => {
       if (active) setExpense(result);
     }).catch((cause: unknown) => {
       if (active) setError(cause instanceof Error ? cause.message : 'Could not load this expense.');
@@ -65,14 +66,3 @@ function ExpenseDetailsContent() {
   );
 }
 
-const styles = StyleSheet.create({
-  content: { padding: Spacing.three, gap: Spacing.three },
-  topLine: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  spacer: { width: 44 },
-  amountBlock: { alignItems: 'center', gap: Spacing.one, paddingVertical: Spacing.four },
-  amountIcon: { width: 56, height: 56, alignItems: 'center', justifyContent: 'center', backgroundColor: Palette.orangeSoft, borderRadius: Radius.pill, marginBottom: Spacing.two },
-  detailCard: { borderWidth: 1, borderColor: Palette.border, borderRadius: Radius.medium, paddingHorizontal: Spacing.three },
-  detailRow: { minHeight: 50, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  splitRow: { minHeight: 58, flexDirection: 'row', alignItems: 'center', gap: Spacing.two, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: Palette.border },
-  splitText: { flex: 1, gap: 1 },
-});

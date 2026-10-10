@@ -1,13 +1,15 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 
-import { ProtectedScreen } from '@/components/protected-screen';
-import { AppText, Avatar, Field, IconButton, Money, Notice, PrimaryButton, ScreenFrame, SecondaryButton } from '@/components/ui/primitives';
-import { Palette, Radius, Spacing, Typography } from '@/constants/theme';
-import { api } from '@/lib/api';
+import { ProtectedScreen } from '@/features/auth/components/protected-screen';
+import { AppText, Avatar, Field, IconButton, Money, Notice, PrimaryButton, ScreenFrame, SecondaryButton } from '@/components/ui';
+import { newExpenseScreenStyles as styles } from '@/theme/styles/screens';
+import { Palette } from '@/theme';
+import { createExpense } from '@/features/expenses/api';
+import type { SplitType } from '@/features/expenses/types';
+import type { Group, GroupMember } from '@/features/groups/types';
 import { useApp } from '@/providers/app-provider';
-import type { Group, GroupMember, SplitType } from '@/types/api';
 
 const splitOptions: { value: SplitType; label: string }[] = [
   { value: 'EQUAL', label: 'Equally' },
@@ -63,7 +65,7 @@ function NewExpenseContent() {
     setParticipants((current) => current.includes(userId) ? current.filter((id) => id !== userId) : [...current, userId]);
   }
 
-  async function createExpense() {
+  async function createExpenseFunc() {
     const parsedAmount = Number(amount);
     if (!session || !group) {
       setError('Choose a group before adding an expense.');
@@ -80,7 +82,7 @@ function NewExpenseContent() {
     setBusy(true);
     setError('');
     try {
-      await api.createExpense(session.token, {
+      await createExpense(session.token, {
         groupId: group.groupId,
         amount: parsedAmount,
         ...(description.trim() ? { description: description.trim() } : {}),
@@ -120,9 +122,10 @@ function NewExpenseContent() {
           <AppText variant="caption" color={Palette.muted}>You are automatically recorded as the payer.</AppText>
           <View style={styles.memberList}>{members.map((member) => {
             const selected = participants.includes(member.userId);
+            const memberName = member.name?.trim() || `Member ${member.userId}`;
             return <Pressable key={member.userId} accessibilityRole="checkbox" accessibilityState={{ checked: selected }} onPress={() => toggleParticipant(member.userId)} style={styles.memberRow}>
-              <Avatar name={member.name} size={38} />
-              <View style={styles.memberName}><AppText variant="small">{member.name}</AppText><AppText variant="caption" color={Palette.muted}>ID {member.userId}</AppText></View>
+              <Avatar name={memberName} size={38} />
+              <View style={styles.memberName}><AppText variant="small">{memberName}</AppText><AppText variant="caption" color={Palette.muted}>ID {member.userId}</AppText></View>
               <View style={[styles.checkbox, selected && styles.checked]}>{selected ? <AppText variant="caption" color={Palette.surface} style={styles.checkMark}>✓</AppText> : null}</View>
             </Pressable>;
           })}</View>
@@ -134,32 +137,9 @@ function NewExpenseContent() {
           ) : null}
         </View>
         {error ? <Notice message={error} /> : null}
-        <PrimaryButton title="Save expense" onPress={createExpense} loading={busy} disabled={!group || loadingGroup} />
+        <PrimaryButton title="Save expense" onPress={createExpenseFunc} loading={busy} disabled={!group || loadingGroup} />
       </ScrollView>
     </ScreenFrame>
   );
 }
 
-const styles = StyleSheet.create({
-  content: { padding: Spacing.three, gap: Spacing.three },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: Spacing.two },
-  headerSpacer: { width: 44 },
-  fieldBlock: { gap: Spacing.two },
-  noGroups: { gap: Spacing.two },
-  label: { fontWeight: Typography.weight.medium },
-  groupOptions: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.two },
-  groupOption: { paddingHorizontal: Spacing.three, paddingVertical: Spacing.two, borderWidth: 1, borderColor: Palette.border, borderRadius: Radius.pill, backgroundColor: Palette.surface },
-  selectedGroup: { borderColor: Palette.orange, backgroundColor: Palette.orangeSoft },
-  splitOptions: { flexDirection: 'row', borderRadius: Radius.small, borderWidth: 1, borderColor: Palette.border, overflow: 'hidden' },
-  splitOption: { flex: 1, minHeight: 46, alignItems: 'center', justifyContent: 'center', paddingHorizontal: Spacing.one, backgroundColor: Palette.surface },
-  selectedSplit: { backgroundColor: Palette.orangeSoft },
-  splitText: { textAlign: 'center' },
-  contractHint: { padding: Spacing.two, borderRadius: Radius.small, backgroundColor: Palette.orangeSoft },
-  memberList: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: Palette.border },
-  splitPreview: { minHeight: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: Spacing.two, borderRadius: Radius.small, backgroundColor: Palette.canvas },
-  memberRow: { minHeight: 58, flexDirection: 'row', alignItems: 'center', gap: Spacing.two, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: Palette.border },
-  memberName: { flex: 1, gap: 1 },
-  checkbox: { width: 22, height: 22, borderWidth: 1, borderColor: Palette.border, borderRadius: Radius.small, alignItems: 'center', justifyContent: 'center' },
-  checked: { borderColor: Palette.orange, backgroundColor: Palette.orange },
-  checkMark: { fontWeight: Typography.weight.bold },
-});

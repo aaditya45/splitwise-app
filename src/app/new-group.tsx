@@ -1,11 +1,12 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
-import { ProtectedScreen } from '@/components/protected-screen';
-import { AppText, Field, IconButton, Notice, PrimaryButton, ScreenFrame } from '@/components/ui/primitives';
-import { Palette, Spacing } from '@/constants/theme';
-import { api } from '@/lib/api';
+import { ProtectedScreen } from '@/features/auth/components/protected-screen';
+import { AppText, Field, IconButton, Notice, PrimaryButton, ScreenFrame } from '@/components/ui';
+import { newGroupScreenStyles as styles } from '@/theme/styles/screens';
+import { Palette } from '@/theme';
+import { createGroup } from '@/features/groups/api';
 import { useApp } from '@/providers/app-provider';
 
 export default function NewGroupScreen() {
@@ -28,7 +29,7 @@ function NewGroupContent() {
     setBusy(true);
     setError('');
     try {
-      const group = await api.createGroup(session.token, {
+      const group = await createGroup(session.token, {
         name: name.trim(),
         ...(description.trim() ? { description: description.trim() } : {}),
         ...(groupImage.trim() ? { groupImage: groupImage.trim() } : {}),
@@ -60,9 +61,3 @@ function NewGroupContent() {
   );
 }
 
-const styles = StyleSheet.create({
-  content: { padding: Spacing.three, gap: Spacing.two },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: Spacing.four },
-  spacer: { width: 44 },
-  form: { gap: Spacing.three, marginTop: Spacing.four },
-});

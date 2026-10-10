@@ -1,13 +1,15 @@
 import { create } from "zustand";
 
 import { AUTH_STORAGE_KEY, GROUPS_STORAGE_KEY } from "@/constants/config";
-import { api } from "@/lib/api";
+import { login as loginUser, register as registerUser } from "@/features/auth/api";
+import type { AuthResponse, AuthUser } from "@/features/auth/types";
+import { getGroupsByUserId } from "@/features/groups/api";
+import type { Group } from "@/features/groups/types";
 import {
     getStoredValue,
     removeStoredValue,
     setStoredValue,
 } from "@/lib/session-storage";
-import type { AuthResponse, AuthUser, Group } from "@/types/api";
 
 export interface AppSession {
   token: string;
@@ -42,6 +44,7 @@ function toSession(response: AuthResponse): AppSession {
       userId: response.userId,
       email: response.email,
       name: response.name,
+      phone: response.phone,
     },
   };
 }
@@ -54,7 +57,8 @@ function parseSession(value: string | null): AppSession | null {
       typeof candidate.token === "string" &&
       typeof candidate.user?.userId === "number" &&
       typeof candidate.user.email === "string" &&
-      typeof candidate.user.name === "string"
+      typeof candidate.user.name === "string" &&
+      (candidate.user.phone === undefined || typeof candidate.user.phone === "string")
     ) {
       return candidate as AppSession;
     }
@@ -91,7 +95,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
     set({ groupsLoading: true, groupsError: null });
     try {
-      const groups = await api.getGroupsByUserId(
+      const groups = await getGroupsByUserId(
         session.token,
         session.user.userId,
       );
@@ -135,7 +139,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
 
   login: async (email, password) => {
-    const response = await api.login({ email, password });
+    const response = await loginUser({ email, password });
     const session = toSession(response);
     await setStoredValue(AUTH_STORAGE_KEY, JSON.stringify(session));
     set({ session, groups: [], groupsError: null });
@@ -145,7 +149,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
 
   register: async (values) => {
-    const response = await api.register(values);
+    const response = await registerUser(values);
     const session = toSession(response);
     await setStoredValue(AUTH_STORAGE_KEY, JSON.stringify(session));
     set({ session, groups: [], groupsError: null });
