@@ -98,16 +98,19 @@ export function GroupDetailsScreen({ groupId }: { groupId: string }) {
         {expenseGroups.length ? expenseGroups.map((dateGroup) => (
           <View key={dateGroup.dateKey} style={styles.expenseDateGroup}>
             <AppText variant="section" style={styles.dateHeading}>{dateGroup.label}</AppText>
-            {dateGroup.expenses.map((expense) => (
-              <Pressable key={expense.expenseId} accessibilityRole="button" onPress={() => router.push({ pathname: '/expense/[expenseId]', params: { expenseId: String(expense.expenseId) } })} style={({ pressed }) => [styles.expenseRow, pressed && styles.pressed]}>
-                <View style={styles.expenseIcon}><AppIcon name="add" color={Palette.orangeDark} size={18} /></View>
-                <View style={styles.expenseText}>
-                  <AppText variant="body" style={styles.expenseTitle}>{expense.description || 'Group expense'}</AppText>
-                </View>
-                <Money amount={expense.amount} variant="small" color={expense.paidBy === userId ? Palette.ink : Palette.orangeDark} />
-                <AppIcon name="chevron" color={Palette.muted} size={18} />
-              </Pressable>
-            ))}
+            {dateGroup.expenses.map((expense) => {
+              const payerId = typeof expense.paidBy === 'number' ? expense.paidBy : expense.paidBy.userId;
+              return (
+                <Pressable key={expense.expenseId} accessibilityRole="button" onPress={() => router.push({ pathname: '/expense/[expenseId]', params: { expenseId: String(expense.expenseId) } })} style={({ pressed }) => [styles.expenseRow, pressed && styles.pressed]}>
+                  <View style={styles.expenseIcon}><AppIcon name="add" color={Palette.orangeDark} size={18} /></View>
+                  <View style={styles.expenseText}>
+                    <AppText variant="body" style={styles.expenseTitle}>{expense.description || 'Group expense'}</AppText>
+                  </View>
+                  <Money amount={expense.amount} variant="small" color={payerId === userId ? Palette.ink : Palette.orangeDark} />
+                  <AppIcon name="chevron" color={Palette.muted} size={18} />
+                </Pressable>
+              );
+            })}
           </View>
         )) : <View style={styles.emptyExpenses}><AppText variant="small" color={Palette.muted}>No expenses yet. Add the first one when your group is ready.</AppText></View>}
 
