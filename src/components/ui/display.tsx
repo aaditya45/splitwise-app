@@ -5,6 +5,14 @@ import { displayStyles as styles } from '@/theme/styles/components';
 import { Palette } from '@/theme';
 import { AppText } from './text';
 
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  INR: '₹',
+  USD: '$',
+  EUR: '€',
+  GBP: '£',
+  JPY: '¥',
+};
+
 export function Avatar({ name, size = 42 }: { name?: string | null; size?: number }) {
   const initials = (name ?? '').trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('');
   return (
@@ -20,9 +28,11 @@ export function Money({ amount, variant = 'body', color = Palette.ink }: { amoun
 }
 
 export function CurrencySymbol() {
-  const symbol = new Intl.NumberFormat(undefined, { style: 'currency', currency: CURRENCY_CODE, currencyDisplay: 'narrowSymbol' })
-    .formatToParts(0)
-    .find((part) => part.type === 'currency')?.value;
-  return <AppText variant="heading" color={Palette.orangeDark}>{symbol ?? CURRENCY_CODE}</AppText>;
+  const symbol = CURRENCY_SYMBOLS[CURRENCY_CODE] ?? CURRENCY_CODE;
+  return (
+    <AppText variant="heading" color={Palette.orangeDark}>
+      {symbol}
+    </AppText>
+  );
 }
 
