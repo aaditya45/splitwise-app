@@ -51,15 +51,22 @@ function ExpenseDetailsContent() {
           <Money amount={expense.amount} variant="display" />
           <AppText variant="body" color={Palette.muted}>{expense.description || 'Group expense'}</AppText>
           {expense.expenseDate ? <AppText variant="caption" color={Palette.muted}>
-  {formatExpenseDate(expense.expenseDate)}
-</AppText> : null}
+            {formatExpenseDate(expense.expenseDate)}
+          </AppText> : null}
         </View>
         <View style={styles.detailCard}>
-          <View style={styles.detailRow}><AppText variant="small" color={Palette.muted}>Paid by</AppText><AppText variant="small">{payerId === session?.user.userId ? 'You' : payer?.name ?? `User ${payerId}`}</AppText></View>
-          {payerEmail ? <AppText variant="caption" color={Palette.muted}>{payerEmail}</AppText> : null}
-          {payerPhone ? <AppText variant="caption" color={Palette.muted}>{payerPhone}</AppText> : null}
-          <View style={uiStyles.divider} />
-          <View style={styles.detailRow}><AppText variant="small" color={Palette.muted}>Expense ID</AppText><AppText variant="small">{expense.expenseId}</AppText></View>
+          <View style={styles.detailRow}>
+            <AppText variant="small">Paid by</AppText>
+            <AppText variant="small" style={styles.detailValue}>{payerId === session?.user.userId ? `You (${payer?.name})` : payer?.name ?? `${payer} (${payer?.userId})`}</AppText>
+          </View>
+          {payerEmail ? <AppText variant="caption" color={Palette.muted} style={styles.detailContact}>{payerEmail}</AppText> : null}
+          {payerPhone ? <AppText variant="caption" color={Palette.muted} style={styles.detailContact}>{payerPhone}</AppText> : null}
+          <View style={[uiStyles.divider, styles.detailDivider]} />
+          {/* WILL NOT DISPLAY EXPENSE ID */}
+          {/* <View style={styles.detailRow}>
+            <AppText variant="small" color={Palette.muted}>Expense ID</AppText>
+            <AppText variant="small" style={styles.detailValue}>{expense.expenseId}</AppText>
+          </View> */}
         </View>
 
         {/* PARTICIPANTS CURRENTLY NOT IN DISPLAY */}
@@ -96,9 +103,9 @@ function ExpenseDetailsContent() {
               <Avatar name={splitAvatarName} size={38} />
               <View style={styles.splitText}>
                 <AppText variant="small">{splitUserName}</AppText>
-                <AppText variant="caption" color={Palette.muted}>{split.splitType.toLowerCase()}</AppText>
-                {split.user?.email ? <AppText variant="caption" color={Palette.muted}>{split.user.email}</AppText> : null}
-                {split.user?.phone ? <AppText variant="caption" color={Palette.muted}>{split.user.phone}</AppText> : null}
+                <AppText variant="caption" color={Palette.muted}>#{split.user?.userId}</AppText>
+                {/* {split.user?.email ? <AppText variant="caption" color={Palette.muted}>{split.user.email}</AppText> : null}
+                {split.user?.phone ? <AppText variant="caption" color={Palette.muted}>{split.user.phone}</AppText> : null} */}
               </View>
               <Money amount={split.amount} variant="small" />
             </View>
