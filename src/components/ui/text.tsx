@@ -10,6 +10,7 @@ export function AppText({ children, variant = 'body', color = Palette.ink, style
   color?: ColorValue;
   style?: StyleProp<TextStyle>;
   numberOfLines?: number;
+  ellipsizeMode?: 'head' | 'middle' | 'tail' | 'clip';
   accessibilityRole?: 'header' | 'text';
 }) {
   const fontSize = Typography.size[variant];
@@ -38,3 +39,6 @@ export function PageHeader({ title, subtitle, right }: { title: string; subtitle
   );
 }
 
+export function TruncatedText(props: Omit<React.ComponentProps<typeof AppText>, 'numberOfLines' | 'ellipsizeMode'>) {
+  return <AppText {...props} numberOfLines={1} ellipsizeMode="tail" />;
+}
