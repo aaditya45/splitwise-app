@@ -21,7 +21,7 @@ function NewGroupContent() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
-  async function createGroup() {
+  async function createGroupFunc() {
     if (!name.trim() || !session) {
       setError('Add a name for your group.');
       return;
@@ -54,7 +54,7 @@ function NewGroupContent() {
           <Field label="Description (optional)" value={description} onChangeText={setDescription} placeholder="What's this group for?" multiline maxLength={240} />
           <Field label="Group image URL (optional)" value={groupImage} onChangeText={setGroupImage} placeholder="https://..." autoCapitalize="none" keyboardType="url" />
           {error ? <Notice message={error} /> : null}
-          <PrimaryButton title="Create group" onPress={createGroup} loading={busy} />
+          <PrimaryButton title="Create group" onPress={createGroupFunc} loading={busy} />
         </View>
       </ScrollView>
     </ScreenFrame>
