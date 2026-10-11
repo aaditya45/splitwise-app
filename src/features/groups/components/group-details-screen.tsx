@@ -7,6 +7,7 @@ import { groupDetailsScreenStyles as styles } from '@/theme/styles/screens';
 import { Palette } from '@/theme';
 import type { Expense } from '@/features/expenses/types';
 import { useGroupDetails } from '@/features/groups/hooks/use-group-details';
+import { TruncatedText } from '@/components/ui/text';
 
 interface ExpenseDateGroup {
   dateKey: string;
@@ -57,18 +58,18 @@ export function GroupDetailsScreen({ groupId }: { groupId: string }) {
     <ScreenFrame>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.topLine}>
-          <IconButton name="back" accessibilityLabel="Go back" onPress={() => router.back()} />
+          <IconButton name="back" backgroundColor={Palette.canvas} accessibilityLabel="Go back" onPress={() => router.back()} />
           <View style={styles.headerText}>
-            <AppText variant="caption" color={Palette.muted}>GROUP · {group.groupId}</AppText>
-            <AppText variant="heading">{group.name}</AppText>
+            <TruncatedText variant="section">{group.name}</TruncatedText>
           </View>
           <View style={styles.headerActions}>
             <IconButton name="addUser" accessibilityLabel="Add a user" onPress={() => router.push({ pathname: '/add-member', params: { groupId: String(group.groupId) } })} />
+            <IconButton name="add" accessibilityLabel="Add expense" backgroundColor={Palette.orange} color={Palette.canvas} onPress={() => router.push({ pathname: '/new-expense', params: { groupId: String(group.groupId) } })} />
           </View>
         </View>
 
-        {group.description ? <AppText variant="small" color={Palette.muted}>{group.description}</AppText> : null}
-        <PrimaryButton title="Add an expense" icon="add" onPress={() => router.push({ pathname: '/new-expense', params: { groupId: String(group.groupId) } })} />
+        {group.description ? <View style={styles.emptyExpenses}><AppText variant="small" color={Palette.muted}>{group.description}</AppText></View> : null}
+        {/* <PrimaryButton title="Add an expense" icon="add" onPress={() => router.push({ pathname: '/new-expense', params: { groupId: String(group.groupId) } })} /> */}
 
         <View style={styles.summaryCard}>
           <AppText variant="small" color={Palette.muted}>Your total</AppText>
@@ -89,7 +90,7 @@ export function GroupDetailsScreen({ groupId }: { groupId: string }) {
         {message ? <Notice message={message} kind={isError ? 'error' : 'success'} /> : null}
 
         <View style={styles.sectionHead}>
-          <AppText variant="section">Expenses</AppText>
+          <AppText variant="body">Expenses</AppText>
           <AppText variant="caption" color={Palette.muted}>{expenses.length}</AppText>
         </View>
 
@@ -114,7 +115,7 @@ export function GroupDetailsScreen({ groupId }: { groupId: string }) {
           </View>
         )) : <View style={styles.emptyExpenses}><AppText variant="small" color={Palette.muted}>No expenses yet. Add the first one when your group is ready.</AppText></View>}
 
-        <SecondaryButton title="Refresh group" onPress={() => void loadGroup(true)} />
+        <IconButton name="refresh" accessibilityLabel="Refresh list" onPress={() => void loadGroup(true)} />
       </ScrollView>
     </ScreenFrame>
   );

@@ -14,6 +14,7 @@ const iconNames = {
   chevron: { ios: 'chevron.right', android: 'chevron_right' },
   search: { ios: 'magnifyingglass', android: 'search' },
   close: { ios: 'xmark', android: 'close' },
+  refresh: { ios: 'arrow.clockwise', android: 'refresh' },
 } as const;
 
 export type IconName = keyof typeof iconNames;
