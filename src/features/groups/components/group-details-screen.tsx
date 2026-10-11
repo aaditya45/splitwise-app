@@ -59,16 +59,16 @@ export function GroupDetailsScreen({ groupId }: { groupId: string }) {
         <View style={styles.topLine}>
           <IconButton name="back" accessibilityLabel="Go back" onPress={() => router.back()} />
           <View style={styles.headerText}>
-            <AppText variant="caption" color={Palette.muted}>GROUP · {group.groupId}</AppText>
             <AppText variant="heading">{group.name}</AppText>
           </View>
           <View style={styles.headerActions}>
             <IconButton name="addUser" accessibilityLabel="Add a user" onPress={() => router.push({ pathname: '/add-member', params: { groupId: String(group.groupId) } })} />
+            <IconButton name="add" accessibilityLabel="Add a user" backgroundColor={Palette.orange} color={Palette.canvas} onPress={() => router.push({ pathname: '/new-expense', params: { groupId: String(group.groupId) } })} />
           </View>
         </View>
 
         {group.description ? <AppText variant="small" color={Palette.muted}>{group.description}</AppText> : null}
-        <PrimaryButton title="Add an expense" icon="add" onPress={() => router.push({ pathname: '/new-expense', params: { groupId: String(group.groupId) } })} />
+        {/* <PrimaryButton title="Add an expense" icon="add" onPress={() => router.push({ pathname: '/new-expense', params: { groupId: String(group.groupId) } })} /> */}
 
         <View style={styles.summaryCard}>
           <AppText variant="small" color={Palette.muted}>Your total</AppText>

@@ -42,10 +42,31 @@ export function SecondaryButton({ title, onPress, icon, disabled = false }: {
   );
 }
 
-export function IconButton({ name, onPress, accessibilityLabel }: { name: IconName; onPress: () => void; accessibilityLabel: string }) {
+export function IconButton({
+  name,
+  onPress,
+  accessibilityLabel,
+  color = Palette.ink,
+  backgroundColor,
+}: {
+  name: IconName;
+  onPress: () => void;
+  accessibilityLabel: string;
+  color?: string;
+  backgroundColor?: string;
+}) {
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel} onPress={onPress} style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}>
-      <AppIcon name={name} color={Palette.ink} size={20} />
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.iconButton,
+        backgroundColor ? { backgroundColor } : null,
+        pressed && styles.pressed,
+      ]}
+    >
+      <AppIcon name={name} color={color} size={20} />
     </Pressable>
   );
 }
