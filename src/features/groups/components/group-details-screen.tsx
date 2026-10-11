@@ -69,7 +69,7 @@ export function GroupDetailsScreen({ groupId }: { groupId: string }) {
           </View>
         </View>
 
-        {group.description ? <View style={styles.emptyExpenses}><AppText variant="small" color={Palette.muted}>{group.description}</AppText></View> : null}
+        {/* {group.description ? <View style={styles.emptyExpenses}><AppText variant="small" color={Palette.muted}>{group.description}</AppText></View> : null} */}
         {/* <PrimaryButton title="Add an expense" icon="add" onPress={() => router.push({ pathname: '/new-expense', params: { groupId: String(group.groupId) } })} /> */}
 
         <SettleUpSection toPay={toPay} toReceive={toReceive} payingId={payingId} onPay={(id) => void markPaid(id)} />

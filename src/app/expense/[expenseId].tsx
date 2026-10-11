@@ -61,7 +61,9 @@ function ExpenseDetailsContent() {
           <View style={uiStyles.divider} />
           <View style={styles.detailRow}><AppText variant="small" color={Palette.muted}>Expense ID</AppText><AppText variant="small">{expense.expenseId}</AppText></View>
         </View>
-        {expense.participants?.length ? <>
+
+        {/* PARTICIPANTS CURRENTLY NOT IN DISPLAY */}
+        {/* {expense.participants?.length ? <>
           <AppText variant="section">Participants</AppText>
           <View>
             {expense.participants.map((participant) => (
@@ -75,7 +77,7 @@ function ExpenseDetailsContent() {
               </View>
             ))}
           </View>
-        </> : null}
+        </> : null} */}
         <AppText variant="section">Shares</AppText>
         {expense.splits?.length ? expense.splits.map((split) => {
           const splitUserId = split.user?.userId ?? split.userId;
