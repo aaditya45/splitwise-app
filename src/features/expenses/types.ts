@@ -18,7 +18,7 @@ export interface ExpenseSplit {
 export interface Expense {
   expenseId: number;
   groupId: number;
-  paidBy: number | ExpenseParty;
+  paidBy: ExpenseParty;
   amount: number;
   description?: string;
   expenseDate?: string;

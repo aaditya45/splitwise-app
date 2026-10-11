@@ -7,6 +7,7 @@ import { groupDetailsScreenStyles as styles } from '@/theme/styles/screens';
 import { Palette } from '@/theme';
 import type { Expense } from '@/features/expenses/types';
 import { useGroupDetails } from '@/features/groups/hooks/use-group-details';
+import { SettleUpSection } from '@/features/settlements/components/settle-up-section';
 import { TruncatedText } from '@/components/ui/text';
 
 interface ExpenseDateGroup {
@@ -48,7 +49,7 @@ function groupExpensesByDate(expenses: Expense[]): ExpenseDateGroup[] {
 }
 
 export function GroupDetailsScreen({ groupId }: { groupId: string }) {
-  const { group, expenses, loading, message, isError, balance, balanceDirection, balanceAmount, loadGroup, userId } = useGroupDetails(groupId);
+  const { group, expenses, loading, message, isError, toPay, toReceive, payingId, markPaid, loadGroup, userId } = useGroupDetails(groupId);
   const expenseGroups = useMemo(() => groupExpensesByDate(expenses), [expenses]);
 
   if (loading && !group) return <ScreenFrame><LoadingView label="Loading group" /></ScreenFrame>;
@@ -71,21 +72,7 @@ export function GroupDetailsScreen({ groupId }: { groupId: string }) {
         {group.description ? <View style={styles.emptyExpenses}><AppText variant="small" color={Palette.muted}>{group.description}</AppText></View> : null}
         {/* <PrimaryButton title="Add an expense" icon="add" onPress={() => router.push({ pathname: '/new-expense', params: { groupId: String(group.groupId) } })} /> */}
 
-        <View style={styles.summaryCard}>
-          <AppText variant="small" color={Palette.muted}>Your total</AppText>
-          <View style={styles.summaryRow}>
-            <View style={styles.summaryText}>
-              <AppText variant="caption" color={Palette.muted}>{balanceDirection}</AppText>
-              <Money amount={balanceAmount} variant="display" color={balance.net > 0 ? Palette.ink : Palette.green} />
-            </View>
-            <View style={[styles.badge, balance.net > 0 ? styles.badgeDebt : styles.badgeCredit]}>
-              <AppText variant="small" color={balance.net > 0 ? Palette.ink : Palette.green}>{balance.net > 0 ? 'Debt' : balance.net < 0 ? 'Receivable' : 'Even'}</AppText>
-            </View>
-          </View>
-          <AppText variant="caption" color={Palette.muted}>
-            {balance.net > 0 ? `You need to pay ${balance.youOwe - balance.owedToYou} in total.` : balance.net < 0 ? `You are owed ${Math.abs(balance.net)} in total.` : 'Your balance is fully settled for this group.'}
-          </AppText>
-        </View>
+        <SettleUpSection toPay={toPay} toReceive={toReceive} payingId={payingId} onPay={(id) => void markPaid(id)} />
 
         {message ? <Notice message={message} kind={isError ? 'error' : 'success'} /> : null}
 
@@ -105,7 +92,8 @@ export function GroupDetailsScreen({ groupId }: { groupId: string }) {
                 <Pressable key={expense.expenseId} accessibilityRole="button" onPress={() => router.push({ pathname: '/expense/[expenseId]', params: { expenseId: String(expense.expenseId) } })} style={({ pressed }) => [styles.expenseRow, pressed && styles.pressed]}>
                   <View style={styles.expenseIcon}><AppIcon name="add" color={Palette.orangeDark} size={18} /></View>
                   <View style={styles.expenseText}>
-                    <AppText variant="body" style={styles.expenseTitle}>{expense.description || 'Group expense'}</AppText>
+                    <AppText variant="small" style={styles.expenseTitle}>{expense.description || 'Group expense'}</AppText>
+                    <AppText variant="caption" color={Palette.muted}>{payerId === userId ? 'You paid' : `${expense.paidBy.name} paid`}</AppText>
                   </View>
                   <Money amount={expense.amount} variant="small" color={payerId === userId ? Palette.ink : Palette.orangeDark} />
                   <AppIcon name="chevron" color={Palette.muted} size={18} />

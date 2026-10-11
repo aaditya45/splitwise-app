@@ -22,3 +22,18 @@ export function getGroupBalanceBreakdown(
 
   return { youOwe, owedToYou, net: youOwe - owedToYou };
 }
+
+export interface SettleUpLists {
+  /** Pending settlements where the current user is the debtor: money they need to pay. */
+  toPay: Settlement[];
+  /** Pending settlements where the current user is the creditor: money others owe them. */
+  toReceive: Settlement[];
+}
+
+export function getSettleUpLists(settlements: Settlement[], userId: number): SettleUpLists {
+  const pending = settlements.filter((item) => item.status === 'PENDING');
+  return {
+    toPay: pending.filter((item) => item.debtor.userId === userId),
+    toReceive: pending.filter((item) => item.creditor.userId === userId),
+  };
+}
