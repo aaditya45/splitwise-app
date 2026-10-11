@@ -60,8 +60,7 @@ export function SettleUpSection({ toPay, toReceive, payingId, onPay }: {
   if (!toPay.length && !toReceive.length) {
     return (
       <View style={styles.emptyState}>
-        <AppText variant="section">All settled up</AppText>
-        <AppText variant="small" color={Palette.muted}>You have nothing to pay in this group.</AppText>
+        <AppText variant="small" color={Palette.muted}>All settled up</AppText>
       </View>
     );
   }
@@ -76,19 +75,19 @@ export function SettleUpSection({ toPay, toReceive, payingId, onPay }: {
             return (
               <View key={item.settlementId} style={styles.treeRow}>
                 <TreeGutter isLast={index === toPay.length - 1} />
-                <Avatar name={item.creditor.name} size={36} />
+                <Avatar name={item.creditor.name} size={24} />
                 <View style={styles.rowText}>
-                  <TruncatedText variant="small">Pay {item.creditor.name}</TruncatedText>
-                  {/* <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={`Mark payment to ${item.creditor.name} as paid`}
-                    disabled={payingId !== null}
-                    onPress={() => confirmPay(item)}
-                    style={({ pressed }) => [styles.payButton, payingId !== null && styles.payButtonDisabled, pressed && styles.pressed]}>
-                    {busy ? <ActivityIndicator size="small" color={Palette.surface} /> : <AppText variant="caption" color={Palette.surface}>Mark as paid</AppText>}
-                  </Pressable> */}
+                  <TruncatedText color={Palette.muted} variant="small">{item.creditor.name}</TruncatedText>
                 </View>
-                <Money amount={Number(item.amount)} variant="body" color={Palette.orangeDark} />
+                <Money amount={Number(item.amount)} variant="small" color={Palette.orangeDark} />
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Mark payment to ${item.creditor.name} as paid`}
+                  disabled={payingId !== null}
+                  onPress={() => confirmPay(item)}
+                  style={({ pressed }) => [styles.payPill, payingId !== null && styles.payPillDisabled, pressed && styles.pressed]}>
+                  {busy ? <ActivityIndicator size="small" color={Palette.surface} /> : <AppText variant="caption" color={Palette.surface}>Paid</AppText>}
+                </Pressable>
               </View>
             );
           })}
@@ -101,11 +100,11 @@ export function SettleUpSection({ toPay, toReceive, payingId, onPay }: {
           {toReceive.map((item, index) => (
             <View key={item.settlementId} style={styles.treeRow}>
               <TreeGutter isLast={index === toReceive.length - 1} />
-              <Avatar name={item.debtor.name} size={36} />
+              <Avatar name={item.debtor.name} size={24} />
               <View style={styles.rowText}>
-                <TruncatedText variant="small">{item.debtor.name} owes you</TruncatedText>
+                <TruncatedText color={Palette.muted} variant="small">{item.debtor.name} owes you</TruncatedText>
               </View>
-              <Money amount={Number(item.amount)} variant="body" color={Palette.green} />
+              <Money amount={Number(item.amount)} variant="small" color={Palette.green} />
             </View>
           ))}
         </View>

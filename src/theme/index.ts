@@ -1,18 +1,44 @@
 import { Platform } from 'react-native';
 
 export const Palette = {
+  // Brand orange
   orange: '#F07835',
   orangeDark: '#D95D20',
+  orangeDeep: '#B84A17',   // pressed state, strong emphasis
+  orangeLight: '#F9A66F',  // illustrations, progress bars, disabled primary
   orangeSoft: '#FFF0E5',
-  errorSoft: '#FFF0EE',
+  orangeTint: '#FFF8F2',   // faintest orange, for highlighted rows or banners
+  // Green (money received, success)
   green: '#357B59',
+  greenDark: '#2A634A',
   greenSoft: '#EAF5EE',
+  // Red (errors, destructive actions)
   red: '#B7463D',
-  border: '#EEEAE6',
+  errorSoft: '#FFF0EE',
+  // Amber (warnings, pending states)
+  amber: '#C98A12',
+  amberSoft: '#FFF6DD',
+  // Blue (info, links)
+  blue: '#3F6FA6',
+  blueSoft: '#EAF1F9',
+  // Teal (secondary accent)
+  teal: '#2F8A8A',
+  tealSoft: '#E6F4F3',
+  // Plum (secondary accent)
+  plum: '#8A5A86',
+  plumSoft: '#F5ECF4',
+  // Warm neutrals
   surface: '#FFFFFF',
   canvas: '#FFFCFA',
+  sand: '#F6F1EC',        // filled cards, input backgrounds, chips
+  border: '#EEEAE6',
+  sandDark: '#E1D9D1',    // stronger dividers, inactive tracks
+  stone: '#A39B94',       // placeholders, disabled text, inactive icons
   muted: '#77716C',
+  inkSoft: '#4A443E',     // secondary body text
   ink: '#26231F',
+  // Overlays
+  overlay: 'rgba(38, 35, 31, 0.45)',  // modal backdrops
 } as const;
 
 export const Typography = {
