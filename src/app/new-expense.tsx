@@ -11,15 +11,18 @@ import type { SplitType } from '@/features/expenses/types';
 import type { Group, GroupMember } from '@/features/groups/types';
 import { useApp } from '@/providers/app-provider';
 
-const splitOptions: { value: SplitType; label: string }[] = [
-  { value: 'EQUAL', label: 'Equally' },
-  { value: 'PERCENTAGE', label: 'By percentage' },
-  { value: 'ITEMIZE', label: 'Itemized' },
-];
+// NOT GOING WITH SPLITING OPTIONS FOR NOW, JUST EQUAL SPLIT
+// const splitOptions: { value: SplitType; label: string }[] = [
+//   { value: 'EQUAL', label: 'Equally' },
+//   { value: 'PERCENTAGE', label: 'By percentage' },
+//   { value: 'ITEMIZE', label: 'Itemized' },
+// ];
 
 export default function NewExpenseScreen() {
   return <ProtectedScreen><NewExpenseContent /></ProtectedScreen>;
 }
+
+const splitType: SplitType = 'EQUAL';
 
 function NewExpenseContent() {
   const params = useLocalSearchParams<{ groupId?: string }>();
@@ -29,7 +32,7 @@ function NewExpenseContent() {
   const [participants, setParticipants] = useState<number[]>([]);
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
-  const [splitType, setSplitType] = useState<SplitType>('EQUAL');
+  // const [splitType, setSplitType] = useState<SplitType>('EQUAL');
   const [loadingGroup, setLoadingGroup] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -107,7 +110,8 @@ function NewExpenseContent() {
         <Field label="Amount" value={amount} onChangeText={setAmount} keyboardType="decimal-pad" placeholder="0.00" />
         <Field label="Description" value={description} onChangeText={setDescription} placeholder="What was this for?" maxLength={140} />
 
-        <View style={styles.fieldBlock}>
+        {/* NOT GOING WITH DIFFERENT SPLIT TYPES RIGHT NOW, JUST EQUAL SPLIT */}
+        {/* <View style={styles.fieldBlock}>
           <AppText variant="small" style={styles.label}>Split type</AppText>
           <View style={styles.splitOptions}>{splitOptions.map((option) => (
             <Pressable key={option.value} accessibilityRole="radio" accessibilityState={{ checked: splitType === option.value }} onPress={() => setSplitType(option.value)} style={[styles.splitOption, splitType === option.value && styles.selectedSplit]}>
@@ -115,7 +119,7 @@ function NewExpenseContent() {
             </Pressable>
           ))}</View>
           {splitType !== 'EQUAL' ? <AppText variant="caption" color={Palette.orangeDark} style={styles.contractHint}>The current expense request supports participant IDs and split type, but does not define custom percentage or item amounts.</AppText> : null}
-        </View>
+        </View> */}
 
         <View style={styles.fieldBlock}>
           <AppText variant="small" style={styles.label}>Split with</AppText>
@@ -125,7 +129,7 @@ function NewExpenseContent() {
             const memberName = member.name?.trim() || `Member ${member.userId}`;
             return <Pressable key={member.userId} accessibilityRole="checkbox" accessibilityState={{ checked: selected }} onPress={() => toggleParticipant(member.userId)} style={styles.memberRow}>
               <Avatar name={memberName} size={38} />
-              <View style={styles.memberName}><AppText variant="small">{memberName}</AppText><AppText variant="caption" color={Palette.muted}>ID {member.userId}</AppText></View>
+              <View style={styles.memberName}><AppText variant="small">{memberName}</AppText><AppText variant="caption" color={Palette.muted}>#{member.userId}</AppText></View>
               <View style={[styles.checkbox, selected && styles.checked]}>{selected ? <AppText variant="caption" color={Palette.surface} style={styles.checkMark}>✓</AppText> : null}</View>
             </Pressable>;
           })}</View>
